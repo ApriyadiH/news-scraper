@@ -9,7 +9,6 @@ from notifications import notify_done
 
 from scraper.cnbc import scrape_cnbc
 from scraper.bisnis import scrape_bisnis
-from scraper.kontan import scrape_kontan
 from scraper.investor import scrape_investor
 
 def ask_days(prompt_text, default=2):
@@ -29,7 +28,6 @@ def run_pipeline(scrape_days, export_days):
     all_scrapers = [
         ("cnbc", scrape_cnbc),
         ("bisnis", scrape_bisnis),
-        ("kontan", scrape_kontan),
         ("investor", scrape_investor),
     ]
 
