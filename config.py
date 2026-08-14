@@ -1,0 +1,75 @@
+# config.py
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "Referer": "https://www.google.com/",
+}
+
+BISNIS_CATEGORIES = [
+    # {"id": "1", "name": "Rekomendasi"},
+    # {"id": "655", "name": "Premium"},
+    {"id": "194", "name": "Market"},
+    {"id": "5", "name": "Finansial"},
+    {"id": "43", "name": "Ekonomi"},
+    # {"id": "277", "name": "Tekno"},
+    # {"id": "197", "name": "Style"},
+    # {"id": "186", "name": "Kabar"},
+    # {"id": "650", "name": "Hijau"},
+    # {"id": "392", "name": "Bola"},
+    # {"id": "547", "name": "Infografik"},
+    # {"id": "272", "name": "Otomotif"},
+    # {"id": "258", "name": "Entrepreneur"},
+    # {"id": "222", "name": "Travel"},
+    # {"id": "382", "name": "Jakarta"},
+    # {"id": "548", "name": "Bandung"},
+    # {"id": "420", "name": "Banten"},
+    # {"id": "528", "name": "Semarang"},
+    # {"id": "526", "name": "Surabaya"},
+    # {"id": "529", "name": "Bali"},
+    # {"id": "527", "name": "Sumatera"},
+    # {"id": "406", "name": "Kalimantan"},
+    # {"id": "530", "name": "Sulawesi"},
+    # {"id": "413", "name": "Papua"},
+    # {"id": "242", "name": "Koran"},
+    # {"id": "638", "name": "Viral"},
+    # {"id": "390", "name": "Ramadan"},
+    # {"id": "551", "name": "Video"},
+] 
+
+INVESTOR_CATEGORIES = [
+    {"id":"corporate-action", "name": "Corporate Action"},
+    {"id":"stock", "name": "Stock"},
+    # {"id":"crypto", "name": "Crypto"},
+    # {"id":"bond", "name": "Bond"},
+    # {"id":"mutual-fund", "name": "Mutual Fund"},
+    # {"id":"commodities", "name": "Commodities"},
+
+    # {"id":"banking", "name": "Banking"},
+    # {"id":"insurance", "name": "Insurance"},
+    # {"id":"multifinance", "name": "Multifinance"},
+    # {"id":"fintech", "name": "Fintech"},
+    # {"id":"others", "name": "Others"},
+
+    # {"id":"trade-industry", "name": "Trade & Industry"},
+    # {"id":"energy", "name": "Energy"},
+    # {"id":"infrastructure", "name": "Infrastructure"},
+    # {"id":"property", "name": "Property"},
+    # {"id":"telco", "name": "Telco"},
+    # {"id":"agribusiness", "name": "Agribusiness"},
+    # {"id":"automotive", "name": "Automotive"},
+    # {"id":"ecommerce", "name": "E-Commerce"},
+    # {"id":"umkm", "name": "UMKM"},
+
+    # {"id":"macroeconomy", "name": "Macroeconomy"},
+
+    # {"id":"profil", "name": "Profil"},
+    # {"id":"opini", "name": "Opini"},
+    # {"id":"tips", "name": "Tips"},
+
+    # {"id":"money-lab", "name": "Money Lab"},
+    # {"id":"national", "name": "National"},
+    # {"id":"international", "name": "International"},
+]

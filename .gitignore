@@ -1,0 +1,38 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Runtime data — database, exports, keyword CSV output (regenerated, not source)
+data/news.db
+data/exports/
+
+# PyInstaller build artifacts
+build/
+dist/
+*.spec
+
+# Environment/secrets (if you ever add API keys, etc.)
+.env
+
+# IDE-specific
+.vscode/
+.idea/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Test/temp files
+test_*.py
+*.tmp
+test.py
+
+# Notes
+z_extra/
+*.xlsx
+
+
