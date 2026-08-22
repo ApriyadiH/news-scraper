@@ -35,4 +35,6 @@ test.py
 z_extra/
 *.xlsx
 
+scraper/obsolete1.py
+scraper/obsolete2.py
 

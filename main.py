@@ -9,8 +9,6 @@ from notifications import notify_done
 
 from scraper.cnbc import scrape_cnbc
 from scraper.bisnis import scrape_bisnis
-from scraper.kontan import scrape_kontan
-from scraper.investor import scrape_investor
 
 def ask_days(prompt_text, default=2):
     while True:
@@ -29,15 +27,19 @@ def run_pipeline(scrape_days, export_days):
     all_scrapers = [
         ("cnbc", scrape_cnbc),
         ("bisnis", scrape_bisnis),
-        ("kontan", scrape_kontan),
-        ("investor", scrape_investor),
     ]
 
     for source_name, scrape_function in all_scrapers:
         print(f"\n--- Scraping {source_name} ---")
-        data = scrape_function(days=scrape_days)
-        print(f"{source_name}: {len(data)} articles scraped")
-        insert_articles(data)
+
+        try:
+            data = scrape_function(days=scrape_days)
+            print(f"{source_name}: {len(data)} articles scraped")
+            insert_articles(data)
+
+        except Exception as e:
+            print(f"{source_name} scraper failed: {e}")
+            continue
 
     print("\n--- Running labeling ---")
     run_labeling()

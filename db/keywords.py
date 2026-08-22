@@ -1,7 +1,7 @@
 # db\keywords.py
 import csv
 from db.connection import get_connection
-from utils import resource_path
+from utils.path_utils import resource_path
 
 def load_keywords_from_csv(filepath=None):
     if filepath is None:

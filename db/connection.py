@@ -1,7 +1,7 @@
 # db\connection.py
 import sqlite3
 import os
-from utils import get_app_data_dir
+from utils.path_utils import get_app_data_dir
 
 DB_PATH = os.path.join(get_app_data_dir(), "news.db")
 
