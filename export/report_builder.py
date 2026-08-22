@@ -1,6 +1,6 @@
 # export\report_builder.py
 import pandas as pd
-from utils import get_cutoff_date 
+from utils.date_utils import get_cutoff_date 
 from db.connection import get_connection
 
 def get_labeled_raw_data(days=None):

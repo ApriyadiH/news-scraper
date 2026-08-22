@@ -1,11 +1,13 @@
 # config.py
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+CONTACT_EMAIL = os.getenv("SCRAPER_CONTACT_EMAIL")
+
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
-    "Referer": "https://www.google.com/",
+    "User-Agent": f"MarketNewsScraper/1.0 (contact: {CONTACT_EMAIL})",
 }
 
 BISNIS_CATEGORIES = [
@@ -39,37 +41,15 @@ BISNIS_CATEGORIES = [
     # {"id": "551", "name": "Video"},
 ] 
 
-INVESTOR_CATEGORIES = [
-    {"id":"corporate-action", "name": "Corporate Action"},
-    {"id":"stock", "name": "Stock"},
-    # {"id":"crypto", "name": "Crypto"},
-    # {"id":"bond", "name": "Bond"},
-    # {"id":"mutual-fund", "name": "Mutual Fund"},
-    # {"id":"commodities", "name": "Commodities"},
-
-    # {"id":"banking", "name": "Banking"},
-    # {"id":"insurance", "name": "Insurance"},
-    # {"id":"multifinance", "name": "Multifinance"},
-    # {"id":"fintech", "name": "Fintech"},
-    # {"id":"others", "name": "Others"},
-
-    # {"id":"trade-industry", "name": "Trade & Industry"},
-    # {"id":"energy", "name": "Energy"},
-    # {"id":"infrastructure", "name": "Infrastructure"},
-    # {"id":"property", "name": "Property"},
-    # {"id":"telco", "name": "Telco"},
-    # {"id":"agribusiness", "name": "Agribusiness"},
-    # {"id":"automotive", "name": "Automotive"},
-    # {"id":"ecommerce", "name": "E-Commerce"},
-    # {"id":"umkm", "name": "UMKM"},
-
-    # {"id":"macroeconomy", "name": "Macroeconomy"},
-
-    # {"id":"profil", "name": "Profil"},
-    # {"id":"opini", "name": "Opini"},
-    # {"id":"tips", "name": "Tips"},
-
-    # {"id":"money-lab", "name": "Money Lab"},
-    # {"id":"national", "name": "National"},
-    # {"id":"international", "name": "International"},
-]
+CNBC_CATEGORIES = [
+    {"id":"market", "name":"Market"},
+    {"id":"news", "name":"News"},
+    # {"id":"entrepreneur", "name":"Entrepreneur"},
+    # {"id":"syariah", "name":"Syariah"},
+    # {"id":"tech", "name":"Tech"},
+    # {"id":"lifestyle", "name":"Lifestyle"},
+    # {"id":"opini", "name":"Opini"},
+    # {"id":"mymoney", "name":"My money"},
+    # {"id":"cuap-cuap-cuan", "name":"Cuap cuap cuan"},
+    # {"id":"research", "name":"Research"},
+] 

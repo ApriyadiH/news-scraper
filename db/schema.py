@@ -35,6 +35,7 @@ def create_tables():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             raw_id INTEGER NOT NULL,
             label TEXT NOT NULL,
+            UNIQUE(raw_id, label),
             FOREIGN KEY (raw_id) REFERENCES raw(id)
         )
     """)

@@ -1,11 +1,13 @@
 # export\excel_export.py
 import os
 import pandas as pd
-from utils import get_app_dir
+from utils.path_utils import get_desktop_dir
 
 def export_sheets_to_excel(sheets_dict, filename=None):
+
+
     if filename is None:
-        filename = os.path.join(get_app_dir(), "report.xlsx")
+        filename = os.path.join(get_desktop_dir(), "report.xlsx")
 
     os.makedirs(os.path.dirname(filename), exist_ok=True)
 
