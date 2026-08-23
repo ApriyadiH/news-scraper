@@ -1,15 +1,16 @@
 # scraper\bisnis.py
+
 import time
 from bs4 import BeautifulSoup
 from config import HEADERS, BISNIS_CATEGORIES
 from utils.date_utils import get_today, get_cutoff_date, convert_date
 from utils.http_utils import fetch_page
 
-def scrape_bisnis(max_page=17, days=2):
+def scrape_bisnis(max_page=17, days=2, category_list=BISNIS_CATEGORIES):
     cutoff_date = get_cutoff_date(days=days)
     results = []
 
-    for category in BISNIS_CATEGORIES:
+    for category in category_list:
         page = 1
         while page <= max_page:
             url = f"https://www.bisnis.com/index?categoryId={category['id']}&type=indeks&page={page}"

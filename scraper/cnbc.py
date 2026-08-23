@@ -1,15 +1,17 @@
+# scraper\cnbc.py
+
 import time
 from bs4 import BeautifulSoup
 from config import HEADERS, CNBC_CATEGORIES
 from utils.date_utils import get_cutoff_date, parse_iso_datetime
 from utils.http_utils import fetch_page
 
-def scrape_cnbc(days=2):
+def scrape_cnbc(days=2, category_list = CNBC_CATEGORIES):
     old_article_threshold = days * 2
     cutoff_date = get_cutoff_date(days=days)
     results = []
 
-    for category in CNBC_CATEGORIES:
+    for category in category_list:
         url = f"https://www.cnbcindonesia.com/{category['id']}/sitemap_news.xml"
         resp = fetch_page(
             url,

@@ -8,7 +8,8 @@ def get_app_data_dir():
     if getattr(sys, 'frozen', False):
         base_dir = os.path.join(os.environ["LOCALAPPDATA"], "NewsScraperApp")
     else:
-        base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        base_dir = os.path.join(project_root,"data")
 
     os.makedirs(base_dir, exist_ok=True)
     return base_dir
