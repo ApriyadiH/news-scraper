@@ -1,3 +1,4 @@
+# watch_ui.py
 import sys
 from PySide6.QtWidgets import QApplication
 from ui.main_window import MainWindow
@@ -6,7 +7,7 @@ from ui.main_window import MainWindow
 def main():
     app = QApplication(sys.argv)
 
-    window = MainWindow(debug=False)
+    window = MainWindow(debug=True)
     window.show()
     window.showMaximized()
 

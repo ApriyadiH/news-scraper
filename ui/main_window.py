@@ -1,82 +1,154 @@
-# ui/main_window.py
+# ui\main_window.py
+
 from PySide6.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QLabel,
-    QSpinBox, QPushButton, QTextEdit
+    QMainWindow,
+    QWidget,
+    QVBoxLayout,
 )
-from PySide6.QtCore import QThread, Signal
 
+from ui.widgets.main_window.source_selector import SourceSelector
+from ui.widgets.main_window.date_selector import DateSelector
+from ui.widgets.main_window.export_selector import ExportSelector
+from ui.widgets.main_window.start_section import StartSection
 
-class PipelineWorker(QThread):
-    progress = Signal(str)
-    finished = Signal(str)
-
-    def __init__(self, scrape_days, export_days):
-        super().__init__()
-        self.scrape_days = scrape_days
-        self.export_days = export_days
-
-    def run(self):
-        from main import run_pipeline  # deferred import, only happens when Run is clicked
-        result_path = run_pipeline(self.scrape_days, self.export_days)
-        self.finished.emit(result_path or "Done")
-
+from ui.loading_window import LoadingWindow
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, debug=False):
         super().__init__()
-        self.setWindowTitle("News Scraper")
-        self.resize(500, 400)
 
-        self.loading_label = QLabel("Loading, please wait...")
-        layout = QVBoxLayout()
-        layout.addWidget(self.loading_label)
+        self.resize(500, 650)
 
-        container = QWidget()
-        container.setLayout(layout)
-        self.setCentralWidget(container)
+        self.debug = debug
 
-        # build the real UI shortly after the window is already visible
-        from PySide6.QtCore import QTimer
-        QTimer.singleShot(0, self.build_real_ui)
+        self.setup_ui()
+        self.setup_debug()
 
-    def build_real_ui(self):
+    def setup_ui(self):
+        central_widget = QWidget()
         layout = QVBoxLayout()
 
-        layout.addWidget(QLabel("Days to scrape:"))
-        self.scrape_days_input = QSpinBox()
-        self.scrape_days_input.setMinimum(1)
-        self.scrape_days_input.setValue(2)
-        layout.addWidget(self.scrape_days_input)
+        self.source_selector = SourceSelector()
+        self.date_selector = DateSelector()
+        self.export_selector = ExportSelector()
+        self.start_section = StartSection()
 
-        layout.addWidget(QLabel("Days to export:"))
-        self.export_days_input = QSpinBox()
-        self.export_days_input.setMinimum(1)
-        self.export_days_input.setValue(2)
-        layout.addWidget(self.export_days_input)
+        self.start_section.start_button.clicked.connect(
+            self.start_scraping
+        )
 
-        self.run_button = QPushButton("Run")
-        self.run_button.clicked.connect(self.start_pipeline)
-        layout.addWidget(self.run_button)
+        layout.addWidget(self.source_selector)
+        layout.addWidget(self.date_selector)
+        layout.addWidget(self.export_selector)
+        layout.addWidget(self.start_section)
 
-        self.log_output = QTextEdit()
-        self.log_output.setReadOnly(True)
-        layout.addWidget(self.log_output)
 
-        container = QWidget()
-        container.setLayout(layout)
-        self.setCentralWidget(container)
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
 
-    def start_pipeline(self):
-        self.run_button.setEnabled(False)
-        self.log_output.append("Starting pipeline...")
+    def setup_debug(self):
+        if not self.debug:
+            return
 
-        scrape_days = self.scrape_days_input.value()
-        export_days = self.export_days_input.value()
+        print("=== DEBUG MODE ENABLED ===")
 
-        self.worker = PipelineWorker(scrape_days, export_days)
-        self.worker.finished.connect(self.on_finished)
-        self.worker.start()
+        # Source selector
+        self.source_selector.state_changed.connect(
+            self.debug_source_selector
+        )
 
-    def on_finished(self, result_path):
-        self.log_output.append(f"Done! Report: {result_path}")
-        self.run_button.setEnabled(True)
+        # Date selector
+        self.date_selector.scrape_days.valueChanged.connect(
+            self.debug_date_selector
+        )
+
+        self.date_selector.export_all.toggled.connect(
+            self.debug_date_selector
+        )
+
+        self.date_selector.start_date.dateChanged.connect(
+            self.debug_date_selector
+        )
+
+        self.date_selector.end_date.dateChanged.connect(
+            self.debug_date_selector
+        )
+
+        # Export selector
+        self.export_selector.path_input.textChanged.connect(
+            self.debug_export_selector
+)
+
+    def debug_source_selector(self):
+        print("\n=== SOURCE SELECTOR ===")
+
+        selected = self.source_selector.get_selected_sources()
+
+        print("CNBC:")
+        for category in selected["cnbc"]:
+            print(f"  - {category['name']}")
+
+        print("Bisnis:")
+        for category in selected["bisnis"]:
+            print(f"  - {category['name']}")
+
+        print(
+            "Don't scrape:",
+            not self.source_selector.should_scrape()
+        )
+
+        print("========================")
+
+    def debug_date_selector(self):
+        print("\n=== DATE SELECTOR ===")
+
+        scrape_days = self.date_selector.get_scrape_days()
+        export_dates = self.date_selector.get_export_dates()
+
+        print("Scrape days:")
+        print(f"  - {scrape_days} days")
+
+        print("Export:")
+
+        if export_dates["mode"] == "all":
+            print("  - All available data")
+
+        else:
+            print(f"  - Start: {export_dates['start']}")
+            print(f"  - End:   {export_dates['end']}")
+
+        print("====================")
+
+    def debug_export_selector(self):
+        print("\n=== EXPORT SELECTOR ===")
+
+        path = self.export_selector.get_export_path()
+
+        if path:
+            print(f"Export path: {path}")
+        else:
+            print("Export path: NOT SELECTED")
+
+        print("========================")
+
+    def start_scraping(self):
+        sources = self.source_selector.get_selected_sources()
+        scrape_days = self.date_selector.get_scrape_days()
+        export_dates = self.date_selector.get_export_dates()
+        export_path = self.export_selector.get_export_path()
+
+        self.loading_window = LoadingWindow(
+            sources=sources,
+            scrape_days=scrape_days,
+            export_dates=export_dates,
+            export_path=export_path,
+            main_window=self
+        )
+
+        if self.debug:
+            print("\n=== START SCRAPING ===")
+            print(self.loading_window.get_settings())
+
+        self.loading_window.show()
+        self.hide()
+        self.loading_window.start_pipeline()

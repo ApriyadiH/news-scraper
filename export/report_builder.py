@@ -41,7 +41,6 @@ def get_labeled_raw_data(days=None):
     conn.close()
     return df
 
-
 def build_raw_sheet(df):
     out = df.copy()
     out["News"] = out["label"].apply(lambda x: "News" if x is None or x == "UNLABELED" else "Stock")
@@ -98,6 +97,74 @@ def build_stock_sheet(df):
 
 def build_all_sheets(days=None):
     df = get_labeled_raw_data(days=days)
+    return {
+        "raw": build_raw_sheet(df),
+        "cnbc": build_cnbc_sheet(df),
+        "stock": build_stock_sheet(df),
+    }
+
+def get_labeled_raw_data_by_date(start_date=None, end_date=None, all_date=False):
+    conn = get_connection()
+    
+    if all_date:
+        query = """
+            SELECT 
+                r.id, 
+                r.date, 
+                r.url, 
+                r.source, 
+                r.category, 
+                r.title, 
+                r.content,
+                MIN(l.label) as label
+            FROM raw r
+            LEFT JOIN label l ON r.id = l.raw_id
+            GROUP BY r.id
+        """
+        df = pd.read_sql_query(query, conn)
+
+    else:
+        query = """
+            SELECT 
+                r.id, 
+                r.date, 
+                r.url, 
+                r.source, 
+                r.category, 
+                r.title, 
+                r.content,
+                MIN(l.label) as label
+            FROM raw r
+            LEFT JOIN label l ON r.id = l.raw_id
+            WHERE r.date >= ?
+              AND r.date <= ?
+            GROUP BY r.id
+        """
+
+        df = pd.read_sql_query(
+            query,
+            conn,
+            params=[
+                start_date.isoformat(),
+                end_date.isoformat(),
+            ],
+        )
+
+    conn.close()
+    return df
+
+
+def build_all_sheets_by_date(
+    start_date=None,
+    end_date=None,
+    all_date=False,
+):
+    df = get_labeled_raw_data_by_date(
+        start_date=start_date,
+        end_date=end_date,
+        all_date=all_date,
+    )
+
     return {
         "raw": build_raw_sheet(df),
         "cnbc": build_cnbc_sheet(df),
