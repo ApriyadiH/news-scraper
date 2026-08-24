@@ -1,15 +1,13 @@
 # utils\http_utils.py
+
 import time
 import requests
+
 
 def fetch_page(url, headers=None, retries=3, timeout=15):
     for attempt in range(retries):
         try:
-            resp = requests.get(
-                url,
-                headers=headers,
-                timeout=timeout
-            )
+            resp = requests.get(url, headers=headers, timeout=timeout)
 
             if resp.status_code == 200:
                 return resp
@@ -39,10 +37,7 @@ def fetch_page(url, headers=None, retries=3, timeout=15):
             return None
 
         except requests.RequestException as e:
-            print(
-                f"Request failed: {url} "
-                f"(attempt {attempt + 1}/{retries}): {e}"
-            )
+            print(f"Request failed: {url} " f"(attempt {attempt + 1}/{retries}): {e}")
             time.sleep(3)
 
     return None

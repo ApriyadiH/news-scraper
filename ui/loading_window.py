@@ -1,16 +1,12 @@
 # ui/loading_window.py
 
 from PySide6.QtCore import QThread
-from PySide6.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-)
-
+from PySide6.QtWidgets import QWidget, QVBoxLayout
 from ui.widgets.loading_window.log_widget import LogWidget
 from ui.widgets.loading_window.progress_bar import ProgressBar
 from ui.workers.pipeline_worker import PipelineWorker
-
 from ui.completion_window import CompletionWindow
+
 
 class LoadingWindow(QWidget):
     def __init__(
@@ -45,18 +41,10 @@ class LoadingWindow(QWidget):
         self.log_widget = LogWidget()
         self.progress_bar = ProgressBar()
 
-        # self.close_button = QPushButton("Close")
-        # self.close_button.clicked.connect(self.close)
-
         layout.addWidget(self.log_widget)
         layout.addWidget(self.progress_bar)
-        # layout.addWidget(self.close_button)
 
         self.setLayout(layout)
-
-    # =========================================
-    # Pipeline
-    # =========================================
 
     def start_pipeline(self):
         self.reset()
@@ -71,72 +59,28 @@ class LoadingWindow(QWidget):
 
         self.worker.moveToThread(self.thread)
 
-        # Thread starts worker
-        self.thread.started.connect(
-            self.worker.run
-        )
+        self.thread.started.connect(self.worker.run)
 
-        # Worker → UI
-        self.worker.log.connect(
-            self.add_log
-        )
+        self.worker.log.connect(self.add_log)
+        self.worker.progress.connect(self.set_progress)
+        self.worker.finished.connect(self.show_completion)
+        self.worker.error.connect(self.pipeline_error)
 
-        self.worker.progress.connect(
-            self.set_progress
-        )
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.error.connect(self.thread.quit)
 
-        # Worker finished
-        self.worker.finished.connect(
-            self.pipeline_finished
-        )
-
-        # Worker error
-        self.worker.error.connect(
-            self.pipeline_error
-        )
-
-        # Cleanup
-        self.worker.finished.connect(
-            self.thread.quit
-        )
-
-        self.worker.error.connect(
-            self.thread.quit
-        )
-
-        self.thread.finished.connect(
-            self.worker.deleteLater
-        )
-
-        self.thread.finished.connect(
-            self.thread.deleteLater
-        )
-
-        self.thread.finished.connect(
-            self.pipeline_thread_finished
-        )
+        self.thread.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.thread.finished.connect(self.pipeline_thread_finished)
 
         self.thread.start()
 
-    # =========================================
-    # Worker events
-    # =========================================
-
-    def pipeline_finished(self, export_path):
-        self.show_completion(export_path)
-
     def pipeline_error(self, message):
-        self.add_log(
-            f"ERROR: {message}"
-        )
+        self.add_log(f"ERROR: {message}")
 
     def pipeline_thread_finished(self):
         self.thread = None
         self.worker = None
-
-    # =========================================
-    # UI helpers
-    # =========================================
 
     def add_log(self, message):
         self.log_widget.add_log(message)
@@ -158,8 +102,7 @@ class LoadingWindow(QWidget):
 
     def show_completion(self, final_path):
         self.completion_window = CompletionWindow(
-            report_path=final_path,
-            main_window=self.main_window
+            report_path=final_path, main_window=self.main_window
         )
 
         self.completion_window.show()

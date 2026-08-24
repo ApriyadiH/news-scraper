@@ -1,7 +1,9 @@
 # export\report_builder.py
+
 import pandas as pd
-from utils.date_utils import get_cutoff_date 
+from utils.date_utils import get_cutoff_date
 from db.connection import get_connection
+
 
 def get_labeled_raw_data(days=None):
     conn = get_connection()
@@ -22,7 +24,7 @@ def get_labeled_raw_data(days=None):
             WHERE r.date >= '{cutoff}'
             GROUP BY r.id
         """
-    else: 
+    else:
         query = """
             SELECT 
                 r.id, 
@@ -41,56 +43,55 @@ def get_labeled_raw_data(days=None):
     conn.close()
     return df
 
+
 def build_raw_sheet(df):
     out = df.copy()
-    out["News"] = out["label"].apply(lambda x: "News" if x is None or x == "UNLABELED" else "Stock")
-    out = out.sort_values(["date", "label"], ascending=[False, True]).reset_index(drop=True)
+    out["News"] = out["label"].apply(
+        lambda x: "News" if x is None or x == "UNLABELED" else "Stock"
+    )
+    out = out.sort_values(["date", "label"], ascending=[False, True]).reset_index(
+        drop=True
+    )
     out["No"] = range(1, len(out) + 1)
 
-    out = out.rename(columns={
-        "date": "Date", 
-        "url": "Url", 
-        "label": "Label",
-        "source": "Source", 
-        "category": "Category", 
-        "title": "Title"
-    })
+    out = out.rename(
+        columns={
+            "date": "Date",
+            "url": "Url",
+            "label": "Label",
+            "source": "Source",
+            "category": "Category",
+            "title": "Title",
+        }
+    )
 
     return out[["No", "Date", "Url", "News", "Label", "Source", "Category", "Title"]]
 
 
 def build_cnbc_sheet(df):
     filtered = df[
-        (df["source"] == "cnbcindonesia.com") &
-        (df["label"].isna() | (df["label"] == "UNLABELED"))
+        (df["source"] == "cnbcindonesia.com")
+        & (df["label"].isna() | (df["label"] == "UNLABELED"))
     ].copy()
 
     filtered["News"] = "News"
     filtered = filtered.sort_values("date", ascending=False).reset_index(drop=True)
     filtered["No"] = range(1, len(filtered) + 1)
-    filtered = filtered.rename(columns={
-        "date": "Date", 
-        "url": "Url", 
-        "title": "Title"
-    })
+    filtered = filtered.rename(columns={"date": "Date", "url": "Url", "title": "Title"})
 
     return filtered[["No", "Date", "News", "Url", "Title"]]
 
 
 def build_stock_sheet(df):
-    filtered = df[
-        df["label"].notna() & 
-        (df["label"] != "UNLABELED")
-    ].copy()
+    filtered = df[df["label"].notna() & (df["label"] != "UNLABELED")].copy()
 
-    filtered = filtered.sort_values(["date", "label"], ascending=[False, True]).reset_index(drop=True)
+    filtered = filtered.sort_values(
+        ["date", "label"], ascending=[False, True]
+    ).reset_index(drop=True)
     filtered["No"] = range(1, len(filtered) + 1)
-    filtered = filtered.rename(columns={
-        "date": "Date", 
-        "label": "Label", 
-        "url": "Url", 
-        "title": "Title"
-    })
+    filtered = filtered.rename(
+        columns={"date": "Date", "label": "Label", "url": "Url", "title": "Title"}
+    )
 
     return filtered[["No", "Date", "Label", "Url", "Title"]]
 
@@ -103,9 +104,10 @@ def build_all_sheets(days=None):
         "stock": build_stock_sheet(df),
     }
 
+
 def get_labeled_raw_data_by_date(start_date=None, end_date=None, all_date=False):
     conn = get_connection()
-    
+
     if all_date:
         query = """
             SELECT 

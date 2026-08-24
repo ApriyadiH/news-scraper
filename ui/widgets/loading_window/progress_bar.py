@@ -1,3 +1,5 @@
+# ui/widgets/loading_window/progress_bar.py
+
 from PySide6.QtWidgets import (
     QGroupBox,
     QProgressBar,

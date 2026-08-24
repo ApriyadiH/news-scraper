@@ -1,4 +1,5 @@
 # labeling\keyword_labeler.py
+
 import re
 from db.articles import get_unlabeled_articles, mark_as_labeled
 from db.keywords import get_all_keywords
@@ -6,15 +7,17 @@ from db.labels import insert_label
 
 UNLABELED_TAG = "UNLABELED"
 
+
 def match_labels(title, keyword_rows):
     matched = []
 
     for keyword, label in keyword_rows:
-        pattern = r'\b' + re.escape(keyword) + r'\b'
+        pattern = r"\b" + re.escape(keyword) + r"\b"
         if re.search(pattern, title) and label not in matched:
             matched.append(label)
 
     return matched
+
 
 def run_labeling(limit=None):
     keyword_rows = sorted(get_all_keywords(), key=lambda x: x[1])
@@ -24,7 +27,7 @@ def run_labeling(limit=None):
     if total == 0:
         print("No unlabeled articles found.")
         return
-    
+
     print(f"Found {total} unlabeled articles. Starting labeling...")
     next_checkpoint = 10
 

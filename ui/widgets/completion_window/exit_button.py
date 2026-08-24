@@ -1,6 +1,7 @@
-# ui\widgets\completion_window\exit_button.py
+# ui/widgets/completion_window/exit_button.py
 
-from PySide6.QtWidgets import QPushButton
+from PySide6.QtWidgets import QApplication, QPushButton
+
 
 class ExitButton(QPushButton):
     def __init__(self, parent=None):
@@ -9,6 +10,4 @@ class ExitButton(QPushButton):
         self.clicked.connect(self.exit_app)
 
     def exit_app(self):
-        from PySide6.QtWidgets import QApplication
-
         QApplication.quit()
