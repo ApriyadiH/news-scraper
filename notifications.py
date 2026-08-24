@@ -1,5 +1,7 @@
 # notifications.py
+
 from windows_toasts import Toast, WindowsToaster
+
 
 def notify_done(message="Scraping and export complete!", title="News Scraper"):
     try:

@@ -1,17 +1,16 @@
 # ui/widgets/main_window/source_selector.py
 
 from PySide6.QtCore import Signal
-
 from PySide6.QtWidgets import (
-    QGroupBox,
-    QVBoxLayout,
-    QHBoxLayout,
     QCheckBox,
+    QGroupBox,
+    QHBoxLayout,
     QScrollArea,
+    QVBoxLayout,
     QWidget,
 )
 
-from config import CNBC_CATEGORIES, BISNIS_CATEGORIES
+from config import BISNIS_CATEGORIES, CNBC_CATEGORIES
 
 
 class SourceSelector(QGroupBox):
@@ -21,7 +20,6 @@ class SourceSelector(QGroupBox):
         super().__init__("Sources", parent)
 
         self._updating = False
-
         self.cnbc_categories = []
         self.bisnis_categories = []
 
@@ -29,14 +27,8 @@ class SourceSelector(QGroupBox):
 
     def setup_ui(self):
         main_layout = QVBoxLayout()
-
-        # =========================
-        # Two columns
-        # =========================
-
         columns_layout = QHBoxLayout()
 
-        # CNBC column
         cnbc_widget = self.create_source_column(
             "CNBC Indonesia",
             CNBC_CATEGORIES,
@@ -44,7 +36,6 @@ class SourceSelector(QGroupBox):
             source="cnbc",
         )
 
-        # Bisnis column
         bisnis_widget = self.create_source_column(
             "Bisnis.com",
             BISNIS_CATEGORIES,
@@ -57,17 +48,8 @@ class SourceSelector(QGroupBox):
 
         main_layout.addLayout(columns_layout)
 
-        # =========================
-        # Don't scrape
-        # =========================
-
-        self.no_scrape_checkbox = QCheckBox(
-            "Don't scrape — export existing data only"
-        )
-
-        self.no_scrape_checkbox.toggled.connect(
-            self.toggle_no_scrape
-        )
+        self.no_scrape_checkbox = QCheckBox("Don't scrape — export existing data only")
+        self.no_scrape_checkbox.toggled.connect(self.toggle_no_scrape)
 
         main_layout.addWidget(self.no_scrape_checkbox)
 
@@ -83,13 +65,10 @@ class SourceSelector(QGroupBox):
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
-        # Source checkbox
         source_checkbox = QCheckBox(source_name)
         source_checkbox.setChecked(True)
-
         layout.addWidget(source_checkbox)
 
-        # Category container
         category_container = QWidget()
         category_layout = QVBoxLayout(category_container)
 
@@ -97,23 +76,15 @@ class SourceSelector(QGroupBox):
 
         for category in categories:
             checkbox = QCheckBox(category["name"])
-
-            # Only selected default categories are checked
-            checkbox.setChecked(
-                category["name"] in default_categories
-            )
+            checkbox.setChecked(category["name"] in default_categories)
 
             checkbox.stateChanged.connect(
-                lambda state, source=source:
-                self.category_changed(source)
+                lambda state, source=source: self.category_changed(source)
             )
 
             category_layout.addWidget(checkbox)
-            category_checkboxes.append(
-                (category, checkbox)
-            )
+            category_checkboxes.append((category, checkbox))
 
-        # Save references
         if source == "cnbc":
             self.cnbc_checkbox = source_checkbox
             self.cnbc_categories = category_checkboxes
@@ -121,13 +92,10 @@ class SourceSelector(QGroupBox):
             self.bisnis_checkbox = source_checkbox
             self.bisnis_categories = category_checkboxes
 
-        # Parent checkbox controls all categories
         source_checkbox.stateChanged.connect(
-            lambda state, source=source:
-            self.source_changed(source)
+            lambda state, source=source: self.source_changed(source)
         )
 
-        # Scroll area
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setWidget(category_container)
@@ -135,10 +103,6 @@ class SourceSelector(QGroupBox):
         layout.addWidget(scroll)
 
         return widget
-
-    # =========================
-    # Source checkbox clicked
-    # =========================
 
     def source_changed(self, source):
         if self._updating:
@@ -159,12 +123,7 @@ class SourceSelector(QGroupBox):
             checkbox.setChecked(checked)
 
         self._updating = False
-
         self.state_changed.emit()
-
-    # =========================
-    # Category checkbox changed
-    # =========================
 
     def category_changed(self, source):
         if self._updating:
@@ -177,20 +136,13 @@ class SourceSelector(QGroupBox):
             source_checkbox = self.bisnis_checkbox
             categories = self.bisnis_categories
 
-        any_checked = any(
-            checkbox.isChecked()
-            for _, checkbox in categories
-        )
+        any_checked = any(checkbox.isChecked() for _, checkbox in categories)
 
         self._updating = True
         source_checkbox.setChecked(any_checked)
         self._updating = False
 
         self.state_changed.emit()
-
-    # =========================
-    # Get selected sources
-    # =========================
 
     def get_selected_sources(self):
         selected = {
@@ -214,10 +166,6 @@ class SourceSelector(QGroupBox):
 
         return selected
 
-    # =========================
-    # Don't scrape
-    # =========================
-
     def should_scrape(self):
         return not self.no_scrape_checkbox.isChecked()
 
@@ -238,3 +186,4 @@ class SourceSelector(QGroupBox):
                 checkbox.setChecked(False)
 
         self._updating = False
+        self.state_changed.emit()

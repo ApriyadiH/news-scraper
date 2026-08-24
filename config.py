@@ -1,4 +1,5 @@
 # config.py
+
 import os
 from dotenv import load_dotenv
 
@@ -39,17 +40,17 @@ BISNIS_CATEGORIES = [
     {"id": "638", "name": "Viral"},
     {"id": "390", "name": "Ramadan"},
     {"id": "551", "name": "Video"},
-] 
+]
 
 CNBC_CATEGORIES = [
-    {"id":"market", "name":"Market"},
-    {"id":"news", "name":"News"},
-    {"id":"entrepreneur", "name":"Entrepreneur"},
-    {"id":"syariah", "name":"Syariah"},
-    {"id":"tech", "name":"Tech"},
-    {"id":"lifestyle", "name":"Lifestyle"},
-    {"id":"opini", "name":"Opini"},
-    {"id":"mymoney", "name":"My money"},
-    {"id":"cuap-cuap-cuan", "name":"Cuap cuap cuan"},
-    {"id":"research", "name":"Research"},
-] 
+    {"id": "market", "name": "Market"},
+    {"id": "news", "name": "News"},
+    {"id": "entrepreneur", "name": "Entrepreneur"},
+    {"id": "syariah", "name": "Syariah"},
+    {"id": "tech", "name": "Tech"},
+    {"id": "lifestyle", "name": "Lifestyle"},
+    {"id": "opini", "name": "Opini"},
+    {"id": "mymoney", "name": "My money"},
+    {"id": "cuap-cuap-cuan", "name": "Cuap cuap cuan"},
+    {"id": "research", "name": "Research"},
+]

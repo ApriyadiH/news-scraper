@@ -6,19 +6,15 @@ from config import HEADERS, CNBC_CATEGORIES
 from utils.date_utils import get_cutoff_date, parse_iso_datetime
 from utils.http_utils import fetch_page
 
-def scrape_cnbc(days=2, category_list = CNBC_CATEGORIES):
+
+def scrape_cnbc(days=2, category_list=CNBC_CATEGORIES):
     old_article_threshold = days * 2
     cutoff_date = get_cutoff_date(days=days)
     results = []
 
     for category in category_list:
         url = f"https://www.cnbcindonesia.com/{category['id']}/sitemap_news.xml"
-        resp = fetch_page(
-            url,
-            headers=HEADERS, 
-            retries=3, 
-            timeout=15
-        )
+        resp = fetch_page(url, headers=HEADERS, retries=3, timeout=15)
 
         if resp is None:
             print("Failed to fetch CNBC sitemap")
@@ -50,23 +46,28 @@ def scrape_cnbc(days=2, category_list = CNBC_CATEGORIES):
             date_scraped = date_tag.get_text(strip=True)
             date_formatted = parse_iso_datetime(date_scraped).date()
 
-
             if date_formatted < cutoff_date:
                 old_article_count += 1
                 if old_article_count >= old_article_threshold:
-                    print(f"Hit {old_article_threshold} old articles in a row, stopping.")
+                    print(
+                        f"Hit {old_article_threshold} old articles in a row, stopping."
+                    )
                     break
                 continue
 
-            results.append({
-                "date": date_formatted,
-                "url": link_scraped,
-                "source": "cnbcindonesia.com",
-                "category": category['name'],
-                "title": title_scraped,
-                "content": None,
-            })
+            results.append(
+                {
+                    "date": date_formatted,
+                    "url": link_scraped,
+                    "source": "cnbcindonesia.com",
+                    "category": category["name"],
+                    "title": title_scraped,
+                    "content": None,
+                }
+            )
 
-        print(f"CNBC Indonesia.com, category {category['name']} collected {len(results)} total so far")
-        time.sleep(1) 
+        print(
+            f"CNBC Indonesia.com, category {category['name']} collected {len(results)} total so far"
+        )
+        time.sleep(1)
     return results

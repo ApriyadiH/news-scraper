@@ -1,5 +1,7 @@
 # db\schema.py
+
 from db.connection import get_connection
+
 
 def create_tables():
     conn = get_connection()
@@ -47,6 +49,3 @@ def create_tables():
     conn.commit()
     conn.close()
     print("Tables created (or already exist).")
-
-if __name__ == "__main__":
-    create_tables()

@@ -1,4 +1,4 @@
-# ui\widgets\main_window\start_section.py
+# ui/widgets/main_window/start_section.py
 
 from PySide6.QtWidgets import (
     QGroupBox,
@@ -17,7 +17,6 @@ class StartSection(QGroupBox):
         layout = QVBoxLayout()
 
         self.start_button = QPushButton("START SCRAPING")
-
         self.start_button.setMinimumHeight(65)
 
         self.start_button.setStyleSheet("""

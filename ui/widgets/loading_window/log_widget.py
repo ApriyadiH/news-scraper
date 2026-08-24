@@ -1,3 +1,5 @@
+# ui/widgets/loading_window/log_widget.py
+
 from PySide6.QtWidgets import (
     QGroupBox,
     QPlainTextEdit,

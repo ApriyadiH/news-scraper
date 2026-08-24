@@ -1,11 +1,11 @@
 # ui/widgets/main_window/export_selector.py
 
 from PySide6.QtWidgets import (
+    QFileDialog,
     QGroupBox,
     QHBoxLayout,
     QLineEdit,
     QPushButton,
-    QFileDialog,
 )
 
 from utils.path_utils import get_desktop_dir
@@ -23,10 +23,7 @@ class ExportSelector(QGroupBox):
         self.path_input = QLineEdit()
 
         desktop_path = get_desktop_dir()
-
-        self.path_input.setPlaceholderText(
-            f"{desktop_path}"
-        )
+        self.path_input.setPlaceholderText(desktop_path)
 
         browse_button = QPushButton("Browse")
         browse_button.clicked.connect(self.browse)
@@ -39,7 +36,7 @@ class ExportSelector(QGroupBox):
     def browse(self):
         folder = QFileDialog.getExistingDirectory(
             self,
-            "Choose Export Folder"
+            "Choose Export Folder",
         )
 
         if folder:

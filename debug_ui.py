@@ -1,4 +1,5 @@
-# watch_ui.py
+# debug_ui.py
+
 import sys
 from PySide6.QtWidgets import QApplication
 from ui.main_window import MainWindow
