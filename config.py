@@ -54,3 +54,22 @@ CNBC_CATEGORIES = [
     {"id": "cuap-cuap-cuan", "name": "Cuap cuap cuan"},
     {"id": "research", "name": "Research"},
 ]
+
+IDXCHANNEL_CATEGORIES = [
+    {"id":"market-news", "name": "Market news"},
+    {"id":"economics", "name": "Economics"},
+    {"id":"banking", "name": "Banking"},
+    {"id":"syariah", "name": "Syariah"},
+    {"id":"economia", "name": "Economia"},
+    {"id":"idxc-live", "name": "Idxc live"},
+    {"id":"video", "name": "Video"},
+    {"id":"the-founder", "name": "The founder"},
+    {"id":"idxtainment", "name": "Idxtainment"},
+    {"id":"ecotainment", "name": "Ecotainment"},
+    {"id":"milenomic", "name": "Milenomic"},
+    {"id":"inspirator", "name": "Inspirator"},
+    {"id":"infografis", "name": "Infografis"},
+    {"id":"foto", "name": "Foto"},
+    {"id":"news", "name": "News"},
+    {"id":"technology", "name": "Technology"},
+]

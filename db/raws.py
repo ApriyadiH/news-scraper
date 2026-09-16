@@ -1,9 +1,8 @@
-# db/articles.py
+# db\raws.py
 
 import sqlite3
 
 from db.connection import get_connection
-
 
 def insert_articles(data):
     conn = get_connection()
@@ -51,7 +50,6 @@ def insert_articles(data):
 
     print(f"Inserted {inserted} new articles, skipped {skipped} duplicates.")
 
-
 def get_unlabeled_articles(limit=None):
     conn = get_connection()
     cursor = conn.cursor()
@@ -69,7 +67,6 @@ def get_unlabeled_articles(limit=None):
 
     return rows
 
-
 def mark_as_labeled(raw_id):
     conn = get_connection()
     cursor = conn.cursor()
@@ -81,3 +78,27 @@ def mark_as_labeled(raw_id):
 
     conn.commit()
     conn.close()
+
+def reset_labels(raw_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM label WHERE raw_id = ?", (raw_id,))
+    cursor.execute("DELETE FROM human_label WHERE raw_id = ?", (raw_id,))
+    cursor.execute("UPDATE raw SET is_labeled = 0 WHERE id = ?", (raw_id,))
+    cursor.execute("DELETE FROM ml_label WHERE raw_id = ?", (raw_id,))
+    conn.commit()
+    conn.close()
+
+def get_all_articles():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, title
+        FROM raw
+    """)
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return rows

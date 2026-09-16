@@ -2,7 +2,7 @@
 
 from db.schema import create_tables
 from db.keywords import load_keywords_from_csv
-from db.articles import insert_articles
+from db.raws import insert_articles
 from labeling.keyword_labeler import run_labeling
 from export.report_builder import build_all_sheets
 from export.excel_export import export_sheets_to_excel
@@ -10,6 +10,8 @@ from notifications import notify_done
 
 from scraper.cnbc import scrape_cnbc
 from scraper.bisnis import scrape_bisnis
+from scraper.idnfinancials import scrape_idnfinancials
+from scraper.idxchannel import scrape_idxchannel
 
 
 def ask_days(prompt_text, default=2):
@@ -29,6 +31,8 @@ def run_pipeline(scrape_days, export_days):
     all_scrapers = [
         ("cnbc", scrape_cnbc),
         ("bisnis", scrape_bisnis),
+        ("idn financials", scrape_idnfinancials),
+        ("idx channel", scrape_idxchannel),
     ]
 
     for source_name, scrape_function in all_scrapers:

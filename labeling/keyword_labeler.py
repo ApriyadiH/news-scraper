@@ -1,7 +1,7 @@
 # labeling\keyword_labeler.py
 
 import re
-from db.articles import get_unlabeled_articles, mark_as_labeled
+from db.raws import get_unlabeled_articles, mark_as_labeled
 from db.keywords import get_all_keywords
 from db.labels import insert_label
 

@@ -46,6 +46,35 @@ def create_tables():
         CREATE INDEX IF NOT EXISTS idx_label_raw_id ON label(raw_id)
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS human_label (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            raw_id INTEGER NOT NULL,
+            label TEXT NOT NULL,
+            UNIQUE(raw_id, label),
+            FOREIGN KEY (raw_id) REFERENCES raw(id)
+        )
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_human_label_raw_id ON human_label(raw_id)
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS ml_label (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            raw_id INTEGER NOT NULL,
+            label TEXT NOT NULL,
+            score REAL NOT NULL,
+            UNIQUE(raw_id, label),
+            FOREIGN KEY (raw_id) REFERENCES raw(id)
+        )
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_ml_label_raw_id ON ml_label(raw_id)
+    """)
+
     conn.commit()
     conn.close()
     print("Tables created (or already exist).")

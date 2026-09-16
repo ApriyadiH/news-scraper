@@ -4,7 +4,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 
 from db.schema import create_tables
 from db.keywords import load_keywords_from_csv
-from db.articles import insert_articles
+from db.raws import insert_articles
 
 from labeling.keyword_labeler import run_labeling
 
@@ -15,6 +15,8 @@ from notifications import notify_done
 
 from scraper.cnbc import scrape_cnbc
 from scraper.bisnis import scrape_bisnis
+from scraper.idnfinancials import scrape_idnfinancials
+from scraper.idxchannel import scrape_idxchannel
 
 
 class PipelineWorker(QObject):
@@ -56,40 +58,54 @@ class PipelineWorker(QObject):
             all_scrapers = [
                 ("cnbc", scrape_cnbc),
                 ("bisnis", scrape_bisnis),
+                ("idnfinancials", scrape_idnfinancials),
+                ("idxchannel", scrape_idxchannel),
             ]
 
             self.log.emit("")
             self.log.emit("--- Scraping ---")
 
             for source_name, scrape_function in all_scrapers:
-                categories = self.sources.get(source_name, [])
+                selected = self.sources.get(source_name, False)
 
-                if not categories:
+                if not selected:
                     self.log.emit("")
                     self.log.emit(f"{source_name}: skipped")
                     continue
 
                 self.log.emit("")
                 self.log.emit(f"--- Scraping {source_name} ---")
-                self.log.emit("Categories:")
-
-                for category in categories:
-                    self.log.emit(f"  - {category['name']}")
 
                 try:
-                    data = scrape_function(
-                        days=self.scrape_days,
-                        category_list=categories,
-                    )
+                    if source_name == "idnfinancials":
+                        data = scrape_function(days=self.scrape_days)
 
-                    self.log.emit(f"{source_name}: {len(data)} articles scraped")
+                    else:
+                        categories = selected
+
+                        self.log.emit("Categories:")
+                        for category in categories:
+                            self.log.emit(f"  - {category['name']}")
+
+                        data = scrape_function(
+                            days=self.scrape_days,
+                            category_list=categories,
+                        )
+
+                    self.log.emit(
+                        f"{source_name}: {len(data)} articles scraped"
+                    )
 
                     insert_articles(data)
 
-                    self.log.emit(f"{source_name}: articles inserted")
+                    self.log.emit(
+                        f"{source_name}: articles inserted"
+                    )
 
                 except Exception as e:
-                    self.log.emit(f"{source_name} scraper failed: {e}")
+                    self.log.emit(
+                        f"{source_name} scraper failed: {e}"
+                    )
                     continue
 
             self.progress.emit(50)

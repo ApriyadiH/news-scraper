@@ -1,5 +1,4 @@
-# db\keywords.py
-
+# db/keywords.py
 import csv
 from db.connection import get_connection
 from utils.path_utils import resource_path
@@ -31,3 +30,12 @@ def get_all_keywords():
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+
+def get_distinct_labels():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT DISTINCT label FROM keyword ORDER BY label")
+    rows = cursor.fetchall()
+    conn.close()
+    return [row[0] for row in rows if row[0]]

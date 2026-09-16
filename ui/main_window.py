@@ -4,8 +4,9 @@ from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout
 from ui.widgets.main_window.source_selector import SourceSelector
 from ui.widgets.main_window.date_selector import DateSelector
 from ui.widgets.main_window.export_selector import ExportSelector
-from ui.widgets.main_window.start_section import StartSection
+from ui.widgets.main_window.action_section import ActionSection
 from ui.loading_window import LoadingWindow
+from ui.training_window import TrainingWindow
 
 
 class MainWindow(QMainWindow):
@@ -23,13 +24,14 @@ class MainWindow(QMainWindow):
         self.source_selector = SourceSelector()
         self.date_selector = DateSelector()
         self.export_selector = ExportSelector()
-        self.start_section = StartSection()
-        self.start_section.start_button.clicked.connect(self.start_scraping)
+        self.action_section = ActionSection()
+        self.action_section.start_button.clicked.connect(self.start_scraping)
+        self.action_section.training_button.clicked.connect(self.go_to_training_window)
 
         layout.addWidget(self.source_selector)
         layout.addWidget(self.date_selector)
         layout.addWidget(self.export_selector)
-        layout.addWidget(self.start_section)
+        layout.addWidget(self.action_section)
 
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
@@ -66,6 +68,14 @@ class MainWindow(QMainWindow):
 
         print("Bisnis:")
         for category in selected["bisnis"]:
+            print(f"  - {category['name']}")
+
+        print("Idn Financials:")
+        if selected['idnfinancials']:
+            print(f"  - scrapped")
+        
+        print("Idx Channel:")
+        for category in selected["idxchannel"]:
             print(f"  - {category['name']}")
 
         print("Don't scrape:", not self.source_selector.should_scrape())
@@ -125,3 +135,9 @@ class MainWindow(QMainWindow):
         self.loading_window.show()
         self.hide()
         self.loading_window.start_pipeline()
+
+    def go_to_training_window(self):
+        self.training_window = TrainingWindow(main_window=self)
+
+        self.training_window.show()
+        self.hide()

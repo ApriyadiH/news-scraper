@@ -155,6 +155,34 @@ def get_labeled_raw_data_by_date(start_date=None, end_date=None, all_date=False)
     conn.close()
     return df
 
+def build_kopas_sheets(df):
+    filtered = df[df["label"].notna() & (df["label"] != "UNLABELED")].copy()
+
+    filtered["date"] = pd.to_datetime(filtered["date"])
+
+    filtered = filtered.sort_values(
+        ["date", "label"],
+        ascending=[False, True],
+    )
+
+    kopas_sheets = {}
+
+    for month, month_df in filtered.groupby(filtered["date"].dt.month):
+        sheet_name = f"kopas {month}"
+
+        out = month_df.copy()
+
+        out["Date"] = out["date"]
+        out["Code"] = out["label"]
+        out["News"] = out["title"]
+        out["Link"] = "OPEN"
+        out["URL"] = out["url"]
+
+        kopas_sheets[sheet_name] = out[
+            ["Date", "Code", "News", "Link", "URL"]
+        ].reset_index(drop=True)
+
+    return kopas_sheets
 
 def build_all_sheets_by_date(
     start_date=None,
@@ -167,8 +195,12 @@ def build_all_sheets_by_date(
         all_date=all_date,
     )
 
-    return {
+    sheets = {
         "raw": build_raw_sheet(df),
         "cnbc": build_cnbc_sheet(df),
         "stock": build_stock_sheet(df),
     }
+
+    sheets.update(build_kopas_sheets(df))
+
+    return sheets
